@@ -1,36 +1,38 @@
-import { Injectable } from "@nestjs/common";
-import { CreateMessageDto } from "./dto/create-message.dto";
-import { UpdateMessageDto } from "./dto/update-message.dto";
-import { MessagesRepository } from "./messages.repository";
-import { Message } from "./entities/message.entity";
+import {Injectable} from "@nestjs/common";
+import {CreateMessageDto} from "./dto/create-message.dto";
+import {UpdateMessageDto} from "./dto/update-message.dto";
+import {Message} from "./message.entity";
+import {MessagesRepository} from "./messages.repository";
 
 @Injectable()
 export class MessagesService {
-  constructor(private readonly messageRepository: MessagesRepository) {
-  }
+    constructor(private readonly messageRepository: MessagesRepository) {
+    }
 
-  async create(createMessageDto: CreateMessageDto) {
-    let { message } = createMessageDto;
-    let newMessage: Message = {
-      message: message
-    };
-    await this.messageRepository.insert(newMessage);
-    return "This action adds a new message";
-  }
+    create(createMessageDto: CreateMessageDto) {
+        let {message} = createMessageDto;
+        let newMessage: Message = {
+            message: message
+        };
+        return this.messageRepository.createOrUpdateMessage(newMessage);
+    }
 
-  findAll() {
-    return `This action returns all messages`;
-  }
+    findAll() {
+        return this.messageRepository.getAllMessages();
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
-  }
+    findOne(id: string) {
+        return this.messageRepository.getMessageById(id);
+    }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
+    async update(id: string, updateMessageDto: UpdateMessageDto) {
+        let {message} = updateMessageDto;
+        let updateMessage: Message = await this.messageRepository.getMessageById(id);
+        updateMessage.message = message;
+        return this.messageRepository.createOrUpdateMessage(updateMessage);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
-  }
+    remove(id: string) {
+        return this.messageRepository.deleteMessageById(id);
+    }
 }
