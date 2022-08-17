@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {CreateMessageDto} from "./dto/create-message.dto";
 import {UpdateMessageDto} from "./dto/update-message.dto";
-import {Message} from "./message.entity";
+import {Message} from "./entities/message.entity";
 import {MessagesRepository} from "./messages.repository";
 
 @Injectable()
@@ -12,7 +12,7 @@ export class MessagesService {
     create(createMessageDto: CreateMessageDto) {
         let {message} = createMessageDto;
         let newMessage: Message = {
-            message: message
+            message: message,
         };
         return this.messageRepository.createOrUpdateMessage(newMessage);
     }

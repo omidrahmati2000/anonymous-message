@@ -1,29 +1,29 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {DeleteResult, Repository} from "typeorm";
-import {Message} from "./message.entity";
+import {Message} from "./entities/message.entity";
 
 @Injectable()
 export class MessagesRepository {
     constructor(
         @InjectRepository(Message)
-        private readonly usersRepository: Repository<Message>,
+        private readonly messageRepository: Repository<Message>,
     ) {
     }
 
     async createOrUpdateMessage(message: Message): Promise<Message> {
 
-        await this.usersRepository.save(message);
+        await this.messageRepository.save(message);
 
         return message;
     }
 
     async getAllMessages(): Promise<Message[]> {
-        return this.usersRepository.find();
+        return this.messageRepository.find();
     }
 
     async getMessageById(id: string): Promise<Message> {
-        return await this.usersRepository.findOne({
+        return await this.messageRepository.findOne({
             where: {
                 id: id
             }
@@ -31,7 +31,7 @@ export class MessagesRepository {
     }
 
     async deleteMessageById(id: string): Promise<object> {
-        let result: DeleteResult = await this.usersRepository.delete({id: id});
+        let result: DeleteResult = await this.messageRepository.delete({id: id});
         if (result.affected > 0){
             return {
                 status: 204,

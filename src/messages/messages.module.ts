@@ -3,7 +3,7 @@ import {MessagesService} from "./messages.service";
 import {MessagesController} from "./messages.controller";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {MessagesRepository} from "./messages.repository";
-import {Message} from "./message.entity";
+import {Message} from "./entities/message.entity";
 
 @Module({
     imports: [
