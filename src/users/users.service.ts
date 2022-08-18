@@ -1,19 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+import { UsersRepository } from './users.repository';
+import { CreateUserTransformer } from './transformer/createUser.transformer';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly userRepository: UsersRepository) {}
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user: User = await CreateUserTransformer.toUserEntity(createUserDto);
+    return this.userRepository.createOrUpdateUser(user);
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User> {
+    const user: User = await this.userRepository.findUserById(id);
+
+    if (!user) {
+      throw new NotFoundException('This user not exist');
+    }
+
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -22,5 +34,15 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async findUserByMobile(mobile: string): Promise<User> {
+    const user: User = await this.userRepository.findUserByMobile(mobile);
+
+    if (!user) {
+      throw new NotFoundException('This user not exist');
+    }
+
+    return user;
   }
 }

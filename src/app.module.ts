@@ -5,6 +5,8 @@ import {MessagesModule} from "./messages/messages.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {Message} from "./messages/entities/message.entity";
 import { UsersModule } from './users/users.module';
+import {User} from "./users/entities/user.entity";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     controllers: [AppController],
@@ -14,14 +16,15 @@ import { UsersModule } from './users/users.module';
             type: 'postgres',
             host: 'localhost',
             port: 5432,
-            username: 'postgres',
-            password: 'postgres',
+            username: 'root',
+            password: 'root',
             database: 'anonymous-message',
             synchronize: true,
-            entities: [Message]
+            entities: [Message, User]
         }),
         MessagesModule,
-        UsersModule
+        UsersModule,
+        AuthModule
     ]
 })
 export class AppModule {

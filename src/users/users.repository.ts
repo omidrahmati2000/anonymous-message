@@ -1,20 +1,35 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "./entities/user.entity";
-import { Repository } from "typeorm";
+import {ConflictException, Injectable} from "@nestjs/common";
+import {InjectRepository} from "@nestjs/typeorm";
+import {User} from "./entities/user.entity";
+import {Repository} from "typeorm";
 
 @Injectable()
 export class UsersRepository {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
-  ) {
-  }
+    constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>
+    ) {
+    }
 
-  async createOrUpdateUser(user: User): Promise<string> {
+    async createOrUpdateUser(user: User): Promise<User> {
 
-    await this.userRepository.save(user);
+        try {
+            await this.userRepository.save(user);
+        } catch (error) {
+            if (error.code == 23505) {
+                throw new ConflictException("this user already exists");
+            }
+        }
 
-    return "";
-  }
+        return user;
+    }
+
+    async findUserById(userId: string): Promise<User> {
+        return await this.userRepository.findOneBy({id: userId});
+    }
+
+    async findUserByMobile(mobile: string): Promise<User> {
+        return await this.userRepository.findOneBy({mobile: mobile});
+    }
+
 }
