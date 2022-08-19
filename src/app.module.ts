@@ -7,6 +7,8 @@ import {Message} from "./messages/entities/message.entity";
 import { UsersModule } from './users/users.module';
 import {User} from "./users/entities/user.entity";
 import { AuthModule } from './auth/auth.module';
+import { LinksModule } from './links/links.module';
+import {Link} from "./links/entities/link.entity";
 
 @Module({
     controllers: [AppController],
@@ -20,11 +22,12 @@ import { AuthModule } from './auth/auth.module';
             password: 'root',
             database: 'anonymous-message',
             synchronize: true,
-            entities: [Message, User]
+            entities: [Message, User, Link]
         }),
         MessagesModule,
         UsersModule,
-        AuthModule
+        AuthModule,
+        LinksModule
     ]
 })
 export class AppModule {

@@ -37,4 +37,8 @@ export class AuthService {
 
     return this.jwtService.sign(payload);
   }
+
+  async findUserByMobile(mobile: string): Promise<User> {
+    return await this.userService.findUserByMobile(mobile);
+  }
 }

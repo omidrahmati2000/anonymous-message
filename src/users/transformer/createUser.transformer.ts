@@ -13,7 +13,7 @@ export class CreateUserTransformer {
             firstName: first_name,
             surname: surname,
             mobile: mobile,
-            password: hashedPassword
+            password: hashedPassword,
         }
         return user;
     }

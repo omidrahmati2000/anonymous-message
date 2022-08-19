@@ -2,11 +2,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../interface/jwtPayload.interface';
 import { User } from '../../users/entities/user.entity';
-import { UsersService } from '../../users/users.service';
-import { UnauthorizedException } from '@nestjs/common';
+import { Inject, UnauthorizedException } from '@nestjs/common';
+import { AuthService } from '../auth.service';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly userService: UsersService) {
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {
     super({
       secretOrKey: 'top secret have been ever generated',
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload): Promise<User> {
     const { mobile } = payload;
-    const user: User = await this.userService.findUserByMobile(mobile);
+    const user: User = await this.authService.findUserByMobile(mobile);
 
     if (!user) {
       throw new UnauthorizedException();

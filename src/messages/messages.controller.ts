@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards} from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import {AuthGuard} from "@nestjs/passport";
 
 @Controller('messages')
+@UseGuards(AuthGuard())
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
-  @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+  @Post(':link')
+  create(@Body() createMessageDto: CreateMessageDto, @Param('link') link: string) {
+    return this.messagesService.create(createMessageDto, link);
   }
 
   @Get()
